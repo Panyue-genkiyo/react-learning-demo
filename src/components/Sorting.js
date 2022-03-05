@@ -1,8 +1,9 @@
 import React from 'react';
 import useCustomRouter from "../hooks/useCustomRouter";
+import { useMyContext } from "../context/store";
 //排序
-const Sorting = ({ page ,sort }) => {
-
+const Sorting = () => {
+    const { page, sort } = useMyContext();
     // const navigate = useNavigate();
     const { pushQuery } = useCustomRouter();
 
