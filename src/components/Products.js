@@ -1,6 +1,7 @@
 import React from 'react';
 import ProductsCard from "./ProductsCard";
 
+//react memo优化避免过多次数渲染
 const Products = ({ products }) => {
     return (
         <div className='products'>
@@ -11,4 +12,4 @@ const Products = ({ products }) => {
     );
 };
 
-export default Products;
+export default React.memo(Products);
