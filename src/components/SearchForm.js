@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 import { useNavigate } from "react-router-dom";
 
-const SearchForm = () => {
+const SearchForm = ({ setOpen }) => {
 
     const inputRef = useRef();
 
@@ -11,6 +11,7 @@ const SearchForm = () => {
         e.preventDefault();
         const value = inputRef.current.value;
         if(!value.trim()) return;
+        setOpen(false);
         return navigate(`/search/${value}`);
     }
 
