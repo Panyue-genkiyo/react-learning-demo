@@ -1,25 +1,15 @@
-import React, {useEffect, useState, useMemo} from 'react';
-import { useLocation } from "react-router-dom";
+import React, {useEffect, useState, useMemo } from 'react';
 import Products from "../components/Products";
 import useQuery from "../hooks/useQuery";
 import Pagination from "../components/Pagination";
 import Sorting from "../components/Sorting";
+import { useMyContext } from "../context/store";
 
 const Home = () => {
     //状态
     const [ limit, setLimit ] = useState(9);
     const [ products, setProducts ] = useState([]);
-    const { search } = useLocation();
-
-    //缓存page数量
-    const { page, sort } = useMemo(() => {
-        const page =  new URLSearchParams(search).get('page') || 1;
-        const sort = new URLSearchParams(search).get('sort') || '-createdAt'; //默认按照创建时间倒序
-        return {
-            page: +page,
-            sort
-        }
-    }, [search])
+    const { page, sort } = useMyContext();
 
     const { data, loading, error } = useQuery(
         `/products?limit=${limit}&page=${page}&sort=${sort}`
@@ -36,11 +26,11 @@ const Home = () => {
 
     return (
         <div>
-            <Sorting page={page} sort={sort}/>
+            <Sorting/>
             <Products products={products}/>
             { loading && <h2>loading...</h2> }
             { error && <h2>{error}</h2> }
-            <Pagination totalPages={totalPages} page={page} sort={sort}/>
+            <Pagination totalPages={totalPages}/>
         </div>
     );
 };
