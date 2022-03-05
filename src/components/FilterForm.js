@@ -2,7 +2,7 @@ import React, {useRef} from 'react';
 import { useNavigate } from "react-router-dom";
 
 
-const FilterForm = () => {
+const FilterForm = ({ setOpen }) => {
 
     const inputRef = useRef();
     const selectRef = useRef();
@@ -14,7 +14,8 @@ const FilterForm = () => {
         const value = inputRef.current.value;
         const option = selectRef.current.value;
         if(!value.trim() ) return;
-        console.log(value, option);
+        // console.log(value, option);
+        setOpen(false);
         return navigate(`/filter/${option}/${value}`);
     }
 
