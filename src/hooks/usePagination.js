@@ -1,11 +1,12 @@
 //分页hook
 import React, {useMemo} from 'react';
 import useCustomRouter from "./useCustomRouter";
+import { useMyContext } from "../context/store";
 
-const usePagination = (totalPages, page, sort) => {
-
+const usePagination = (totalPages) => {
+    const { page, sort } = useMyContext();
     const {firstArr, lastArr} = useMemo(() => {
-        console.log(totalPages, page);
+        // console.log(totalPages, page);
         const newArr = [...Array(totalPages)].map((_, i) => i + 1);
         // console.log(newArr);
         if (totalPages < 4)
