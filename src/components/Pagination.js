@@ -1,7 +1,8 @@
 import React  from 'react';
 import usePagination from "../hooks/usePagination";
 
-const Pagination = ({totalPages, page }) => {
+//react memo避免home主页渲染多次导致pagination组件多次无效渲染
+const Pagination = ({ totalPages, page }) => {
 
     const { prev, next, jump, firstArr, lastArr, isActive } = usePagination(totalPages, page);
 
@@ -28,4 +29,4 @@ const Pagination = ({totalPages, page }) => {
     )
 }
 
-export default Pagination
+export default React.memo(Pagination)
