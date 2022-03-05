@@ -1,25 +1,28 @@
 //分页hook
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const usePagination = (totalPages, page) => {
 
-    const [firstArr, setFirstArr] = useState([]);
-    const [lastArr, setLastArr] = useState([]);
-
-    useEffect(() => {
+    const { firstArr, lastArr } = useMemo(() => {
         console.log(totalPages, page);
         const newArr = [...Array(totalPages)].map((_, i) => i + 1);
         // console.log(newArr);
         if(totalPages < 4)
-            return setFirstArr(newArr); //当总页数小于4时
+            return {
+               firstArr : newArr,
+               lastArr : []
+            }; //当总页数小于4时
         if(totalPages - page >= 4) {
-            setFirstArr(newArr.slice(page - 1, page + 2)); //展示前3页
-            setLastArr(newArr.slice(totalPages - 1));  //最后一页
+            return {
+                firstArr: newArr.slice(page - 1, page + 2), //展示前3页
+                lastArr: newArr.slice(totalPages - 1)  //展示最后一页
+            }
         }else{
-            setFirstArr(newArr.slice(totalPages - 4, totalPages));
-            // console.log(totalPages - 4, totalPages);
-            setLastArr([]);
+            return {
+                firstArr: newArr.slice(totalPages - 4, totalPages),
+                lastArr: []
+            }
         }
     }, [totalPages,page]);
 
