@@ -12,12 +12,10 @@ axios.defaults.baseURL = 'http://localhost:5001/api'; //请求的前置url
 
 
 ReactDOM.render(
-  <React.StrictMode>
-      <BrowserRouter>
-          <App/>
-          <ToastContainer/>
-      </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById('root')
+    <BrowserRouter>
+        <App/>
+        <ToastContainer/>
+    </BrowserRouter>,
+    document.getElementById('root')
 );
 
