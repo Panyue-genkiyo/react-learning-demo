@@ -7,9 +7,15 @@ import Pagination from "../components/Pagination";
 const Home = () => {
     //状态
     const [ limit, setLimit ] = useState(9);
-    const [ page, setPage ] = useState(1);
     const [ products, setProducts ] = useState([]);
     const { search } = useLocation();
+
+    //缓存page数量
+    const page = useMemo(() => {
+        const page =  new URLSearchParams(search).get('page') || 1;
+        return +page;
+    }, [search])
+
     const { data, loading, error } = useQuery(
         `/products?limit=${limit}&page=${page}`
     );
@@ -22,11 +28,6 @@ const Home = () => {
         if(!data?.count) return 0;
         return Math.ceil(data.count / limit);
     },[data?.count]);
-
-    useEffect(() => {
-        const page =  new URLSearchParams(search).get('page') || 1;
-        setPage(+page);
-    }, [search])
 
     return (
         <div>
