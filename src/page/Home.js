@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Products from "../components/Products";
 import useQuery from "../hooks/useQuery";
 import Pagination from "../components/Pagination";
+import Sorting from "../components/Sorting";
 
 const Home = () => {
     //状态
@@ -11,13 +12,17 @@ const Home = () => {
     const { search } = useLocation();
 
     //缓存page数量
-    const page = useMemo(() => {
+    const { page, sort } = useMemo(() => {
         const page =  new URLSearchParams(search).get('page') || 1;
-        return +page;
+        const sort = new URLSearchParams(search).get('sort') || '-createdAt'; //默认按照创建时间倒序
+        return {
+            page: +page,
+            sort
+        }
     }, [search])
 
     const { data, loading, error } = useQuery(
-        `/products?limit=${limit}&page=${page}`
+        `/products?limit=${limit}&page=${page}&sort=${sort}`
     );
 
     useEffect(() => {
@@ -31,10 +36,11 @@ const Home = () => {
 
     return (
         <div>
+            <Sorting page={page} sort={sort}/>
             <Products products={products}/>
             { loading && <h2>loading...</h2> }
             { error && <h2>{error}</h2> }
-            <Pagination totalPages={totalPages} page={page}/>
+            <Pagination totalPages={totalPages} page={page} sort={sort}/>
         </div>
     );
 };
