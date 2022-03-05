@@ -4,7 +4,6 @@
   align-items: center;
 }
 
-
 .filter_form form > div{
   position: relative;
   flex: 1;
@@ -40,9 +39,9 @@
   /* padding-right: 10px; */
 }
 
-.filter_form form > div select option { 
+.filter_form form > div select option {
   color: white;
-  font-weight: bold; 
+  font-weight: bold;
   text-align: center;
   background: rgb(0, 172, 172);
 }
