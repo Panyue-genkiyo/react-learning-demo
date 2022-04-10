@@ -1,47 +1,55 @@
 import React, { useState } from 'react';
-import {Link} from "react-router-dom";
-import Model from "./Model";
-import SearchForm from "./SearchForm";
-import FilterForm from "./FilterForm";
-import { useNavigate } from "react-router-dom";
-import ProductForm from "./ProductForm";
+import { useNavigate } from 'react-router-dom'
+import Modal from './Modal';
+import ProductForm from './ProductForm'
+import SearchForm from './SearchForm';
+import FilterForm from './FilterForm';
 
 const Header = () => {
-    const [ openSearch, setOpenSearch ] = useState(false);
-    const [ openFilter, setOpenFilter ] = useState(false);
-    const [ openProduct, setOpenProduct ] = useState(false);
-    const navigate = useNavigate();
-    return (
-        <header>
-            <nav>
-                <p><Link to='/'>Home</Link></p>
-                <p onClick={() => setOpenProduct(true)}>Create Product</p>
-                <p onClick={() => setOpenSearch(true)}>Search</p>
-                <p onClick={() => setOpenFilter(true)}>Filter</p>
-            </nav>
-            {
-                openSearch && (
-                    <Model titleTxt={'search'} setOpen={setOpenSearch}>
-                        <SearchForm setOpen={setOpenSearch}/>
-                    </Model>
-                )
-            }
-            {
-                openFilter && (
-                    <Model titleTxt={'filter'} setOpen={setOpenFilter}>
-                        <FilterForm setOpen={setOpenFilter}/>
-                    </Model>
-                )
-            }
-            {
-                openProduct && (
-                    <Model titleTxt={'Create Product'} setOpen={setOpenProduct}>
-                        <ProductForm btnTxt='Add' setOpen={setOpenProduct}/>
-                    </Model>
-                )
-            }
-        </header>
-    );
+  const [openProd, setOpenProd] = useState(false)
+  const [openSearch, setOpenSearch] = useState(false)
+  const [openFilter, setOpenFilter] = useState(false)
+  const navigate = useNavigate()
+  
+
+  return <header>
+    <nav>
+      <p onClick={() => navigate("/")}>Home</p>
+      <p onClick={() => setOpenProd(true)}>Create Product</p>
+      <p onClick={() => setOpenSearch(true)}>Search</p>
+      <p onClick={() => setOpenFilter(true)}>Filter</p>
+    </nav>
+
+{/* -------- Search --------- */}
+    {
+      openSearch && 
+      <Modal 
+      titleTxt="Search"
+      setOpen={setOpenSearch} >
+        <SearchForm />
+      </Modal>
+    }
+
+{/* -------- Create Product --------- */}
+    {
+      openProd && 
+      <Modal 
+      titleTxt="Create Product"
+      setOpen={setOpenProd} >
+        <ProductForm btnTxt="Add" />
+      </Modal>
+    }
+
+{/* -------- Filter --------- */}
+    {
+      openFilter && 
+      <Modal 
+      titleTxt="Filter"
+      setOpen={setOpenFilter} >
+        <FilterForm />
+      </Modal>
+    }
+  </header>;
 };
 
 export default Header;
