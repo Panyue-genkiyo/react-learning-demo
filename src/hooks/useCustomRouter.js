@@ -1,20 +1,21 @@
-import React from 'react';
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const useCustomRouter = () => {
+  const navigate = useNavigate();
+  const { pathname, search } = useLocation();
 
-    const navigate = useNavigate();
-    const { pathname } = useLocation();
+  const pushQuery = ({page, sort}) => {
+    const query = {};
 
-    const pushQuery = (query) => {
-        // console.log(query);
-        const newQuery = new URLSearchParams(query).toString();
-        // console.log({ newQuery });
-        // console.log({pathname})
-        navigate(`${pathname}?${newQuery}`);
-    }
+    if(page) query.page = page;
+    if(sort) query.sort = sort;
 
-    return { pushQuery }
-};
+    const newQuery = new URLSearchParams(query).toString()
 
-export default useCustomRouter;
+    navigate(`${pathname}?${newQuery}`)
+  }
+  
+  return { pushQuery, pathname, navigate, search }
+}
+
+export default useCustomRouter
