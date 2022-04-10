@@ -5,6 +5,7 @@ import Modal from './Modal';
 import ProductForm from './ProductForm';
 import { deleteProduct } from '../api/productAPI';
 import useMutation from '../hooks/useMutation';
+import LazyLoadImg from "./LazyLoadImg";
 
 
 const ProductCard = ({product}) => {
@@ -12,7 +13,7 @@ const ProductCard = ({product}) => {
   // const { refresh, setRefresh } = useContext(Store)
   const { mutate } = useMutation()
 
- 
+
 
   const handleDeleteProduct = (id) => {
     if(window.confirm('Do you want to delete this?')){
@@ -21,9 +22,9 @@ const ProductCard = ({product}) => {
     }
   }
 
-  
+
   return <div className='card'>
-    <img src={product.image} alt={product.image} />
+    <LazyLoadImg url={product.image}/>
 
     <div className="box">
       <h3>
@@ -44,15 +45,15 @@ const ProductCard = ({product}) => {
 
     <div>
       {
-        openModal && 
-        <Modal 
+        openModal &&
+        <Modal
         titleTxt="Update Product"
         setOpen={setOpenModal}>
-          <ProductForm 
-          btnTxt="Update" 
+          <ProductForm
+          btnTxt="Update"
           data={product}
           />
-        </Modal> 
+        </Modal>
       }
     </div>
   </div>;
