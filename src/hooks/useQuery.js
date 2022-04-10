@@ -1,37 +1,59 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-//获取数据api
-const useQuery = (url) => {
-    const [data, setData] = useState();
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState();
+let cache = {};
 
-    useEffect(() => {
-        let here = true;
-        setLoading(true);
-        axios.get(url)
-            .then(res => {
-                if(!here) return; //在加载之前就已退出
-                setData(res.data.data);
-            })
-            .catch(err => {
-                if(!here) return; //在加载之前就已退出
-                setError(err.response.data.message);
-                toast.error(err.response.data.message);
-            })
-            .finally(() => {
-                if(!here) return; //在加载之前就已退出
-                setLoading(false); //停止加载
-            });
-
-        return () => {
-            here = false;
-        }
-    }, [url])
-
-    return { data, loading, error };
+const optDefault = {
+  sizeCache: 100,
+  saveCache: false
 }
+
+const useQuery = (url, depends = [], option = optDefault) => {
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const clearCache = useCallback(() => {
+    if(Object.keys(cache).length >= option.sizeCache) cache = {}
+  },[option.sizeCache])
+
+  useEffect(() => {
+    if(!url) return;
+
+    let here = true;
+    if(cache[url]){
+      setData(cache[url])
+    }
+
+    if(!cache[url]) setLoading(true)
+
+    axios.get(url)
+      .then(res => {
+        if(here) {
+          setData(res.data.data)
+          if(option.saveCache) {
+            cache[url] = res.data.data
+          }
+        }
+      })
+      .catch(err => {
+        if(here) {
+          setError(err.response.data.msg)
+          toast.error(err.response.data.msg)
+        }
+      })
+      .finally(() => {
+        if(here) setLoading(false)
+      })
+
+      clearCache()
+
+    return () => here = false;
+  }, [...depends, url, clearCache, option.saveCache])
+
+  return { loading, error, data, cache }
+};
+
 
 export default useQuery;
