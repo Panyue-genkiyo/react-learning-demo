@@ -1,83 +1,65 @@
-import axios from 'axios'
-import React, {useRef} from 'react'
+import React, { useState, useEffect } from 'react';
+import { createProduct, updateProduct } from '../api/productAPI';
+import useMutation from '../hooks/useMutation';
 
-const ProductForm = ({btnTxt, setOpen, data}) => {
-    const multiRef = useRef()
+const ProductForm = ({btnTxt, data}) => {
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [image, setImage] = useState('')
+  const [price, setPrice] = useState('')
+  const [category, setCategory] = useState('')
+  const [id, setId] = useState('')
+  const { mutate, loading } = useMutation()
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        const children = multiRef.current.children; //子节点
-        const newData = [...children].reduce((obj, child) => {
-            if (!child.name) return obj;
-            return {...obj, [child.name]: child.value}
-        }, {})
-
-        // console.log(newData)
-        if(data){
-            // console.log('update')
-            // console.log(newData, data);
-            const res = shallowEqual(newData, data)
-            // console.log(res);
-            if(res) return; //如果前后数据一样就不更新
-            axios.put(`/products/${data._id}`, newData)
-                .then(res => {
-                    // console.log(res);
-                    setOpen(false)
-                    window.location.reload();
-                });
-        }else{
-            axios.post(`/products`, newData).then(res => {
-                // console.log(res);
-                setOpen(false);
-                window.location.reload();
-            })
-        }
+  const handleSunmit = (e) => {
+    e.preventDefault()
+    let newData = { title, description, image, price, category };
+    if(id){
+      mutate(() => updateProduct({...newData, id}))
+    }else{
+      mutate(() => createProduct(newData))
     }
+  }
 
-    function shallowEqual(obj1, obj2){
-        const keys = Object.keys(obj1);
-        for(let key of keys){
-            if(obj1[key] != obj2[key]){
-                return false; //数字相等 模糊处理这里是!=
-            }
-        }
-        return true;
+  useEffect(() => {
+    if(data) {
+      setTitle(data.title)
+      setDescription(data.description)
+      setPrice(data.price)
+      setImage(data.image)
+      setCategory(data.category)
+      setId(data._id)
     }
+  },[data])
 
-    return (
-        <div className='product_form'>
-            <form ref={multiRef} onSubmit={handleSubmit}>
-                <input type="text" name="title"
-                       placeholder="Product title" required
-                       defaultValue={data?.title}
-                />
+  return <div className='product_form'>
+    <form onSubmit={handleSunmit}>
+      <input type="text" value={title}
+      placeholder="Product title" required
+      onChange={e => setTitle(e.target.value)} 
+      />
+      <input type="text" value={description}
+      placeholder="Product description" required
+      onChange={e => setDescription(e.target.value)} 
+      />
+      <input type="text" value={price}
+      placeholder="Product price" required
+      onChange={e => setPrice(e.target.value)} 
+      />
+      <input type="text" value={category}
+      placeholder="Product category" required
+      onChange={e => setCategory(e.target.value)} 
+      />
+      <input type="text" value={image}
+      placeholder="Product image" required
+      onChange={e => setImage(e.target.value)} 
+      />
+      
+      <button>
+        { loading ? 'Loading...' : btnTxt }
+      </button>
+    </form>
+  </div>;
+};
 
-                <input type="text" name="description"
-                       placeholder="Product description" required
-                       defaultValue={data?.description}
-                />
-
-                <input type="text" name="price"
-                       placeholder="Product price" required
-                       defaultValue={data?.price}
-                />
-
-                <input type="text" name="category"
-                       placeholder="Product category" required
-                       defaultValue={data?.category}
-                />
-
-                <input type="text" name="image"
-                       placeholder="Product image" required
-                       defaultValue={data?.image}
-                />
-
-                <button>
-                    {btnTxt}
-                </button>
-            </form>
-        </div>
-    )
-}
-
-export default ProductForm
+export default ProductForm;
