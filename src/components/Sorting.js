@@ -1,29 +1,22 @@
 import React from 'react';
-import useCustomRouter from "../hooks/useCustomRouter";
-import { useMyContext } from "../context/store";
-//排序
-const Sorting = () => {
-    const { page, sort } = useMyContext();
-    // const navigate = useNavigate();
-    const { pushQuery } = useCustomRouter();
 
-    const handleSort = (e) => {
-        const { value } = e.target;
-        // navigate(`?sort=${value}`);
-        pushQuery({ page, sort: value });
-    }
+const Sorting = ({calback, sort}) => {
+  const handleSort = (e) => {
+    const { value } = e.target;
+    calback(value)
+    // pushQuery({page, sort: value})
+  }
 
-    return (
-        <div className='sorting'>
-            <select onChange={handleSort} value={sort}>
-                <option value="-createdAt">Newest</option>
-                <option value="createdAt">Oldest</option>
-                <option value="-price">Price: Hight-Low</option>
-                <option value="price">Price: Low-Hight</option>
-            </select>
-            <h2>&#8678;Sort</h2>
-        </div>
-    );
+
+  return <div className='sorting'>
+    <select onChange={handleSort} value={sort}>
+      <option value="-createdAt">Newest</option>
+      <option value="createdAt">Oldest</option>
+      <option value="-price">Price: Hight-Low</option>
+      <option value="price">Price: Low-Hight</option>
+    </select>
+    <h2>&#8678;Sort</h2>
+  </div>;
 };
 
-export default React.memo(Sorting);
+export default Sorting;
