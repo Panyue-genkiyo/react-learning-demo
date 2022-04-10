@@ -2,23 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { ContextProvider } from "./context/store";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from 'react-router-dom'
 import axios from 'axios';
-import {ToastContainer} from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import  { ContextProvider } from './context/store'
 
-
-axios.defaults.baseURL = 'http://localhost:5001/api'; //请求的前置url
-
+axios.defaults.baseURL = 'http://localhost:5001/api'
 
 ReactDOM.render(
+  <React.StrictMode>
     <BrowserRouter>
-        <ContextProvider>
-            <App/>
-            <ToastContainer/>
-        </ContextProvider>
-    </BrowserRouter>,
-    document.getElementById('root')
+      <ContextProvider>
+        <App />
+        <ToastContainer />
+      </ContextProvider>
+    </BrowserRouter>
+   </React.StrictMode>,
+  document.getElementById('root')
 );
+
 
