@@ -1,28 +1,25 @@
-import React, {useRef} from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 
-const SearchForm = ({ setOpen }) => {
+const SearchForm = () => {
+  const [search, setSearch] = useState('')
+  const navigate = useNavigate()
 
-    const inputRef = useRef();
+  const handleSearch = (e) => {
+    e.preventDefault()
+    if(!search.trim()) return;
+    return navigate(`/search/${search}`)
+  }
 
-    const navigate = useNavigate();
+  return (
+    <div className='search_form'>
+      <form onSubmit={handleSearch}>
+        <input type="text" value={search}
+        onChange={e => setSearch(e.target.value)} />
+        <button>Search</button>
+      </form>
+    </div>
+  )
+}
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const value = inputRef.current.value;
-        if(!value.trim()) return;
-        setOpen(false);
-        return navigate(`/search/${value}`);
-    }
-
-    return (
-        <div className='search_form'>
-            <form onSubmit={handleSubmit}>
-                <input type='text' ref={inputRef}/>
-                <button>Search</button>
-            </form>
-        </div>
-    );
-};
-
-export default SearchForm;
+export default SearchForm
