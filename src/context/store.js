@@ -1,37 +1,33 @@
-import React, { useMemo, useContext } from "react";
-import { useLocation } from "react-router-dom";
-import Sorting from "../components/Sorting";
+import { createContext, useContext, useEffect, useReducer } from 'react';
+import { useLocation } from 'react-router-dom';
 
-//全局context api避免props一层一层的传递下去
-//全局组件树
-export const Store = React.createContext();
+import reducers from './reducers';
 
-//自定义hook去读取上下文
-export const useMyContext = () => useContext(Store);
+export const Store = createContext()
 
-export const ContextProvider = ({ children }) => {
+export const useMyContext = () => useContext(Store)
 
-    const { search } = useLocation();
+export const ContextProvider = ({children}) => {
+  const init = {
+    refresh: false, limit: 5, page: 1, sort: '-createdAt'
+  }
+  const [state, dispatch] = useReducer(reducers, init)
+  const { search } = useLocation()
 
-    const { page, sort } = useMemo(() => {
-        const page =  new URLSearchParams(search).get('page') || 1;
-        const sort = new URLSearchParams(search).get('sort') || '-createdAt'; //默认按照创建时间倒序
-        return {
-            page: +page,
-            sort
-        }
-    }, [search]);
 
-    // Store.displayName = 'MY_CONTEXT';
+  useEffect(() => {
+    const page = new URLSearchParams(search).get('page') || 1;
+    const sort = new URLSearchParams(search).get('sort') || '-createdAt';
+    dispatch({type: "SET_PAGE", payload: Number(page)})
+    dispatch({type: "SET_SORT", payload: sort})
+  },[search, dispatch])
+  
+  const value = { ...state, dispatch };
+  
+  return (
+    <Store.Provider value={value}>
+      {children}
+    </Store.Provider>
+  );
+};
 
-    const value = {page , sort}
-
-    return (
-        <Store.Provider value={value}>
-            <Store.Consumer>
-                { value => console.log(value) }
-            </Store.Consumer>
-            {children}
-        </Store.Provider>
-    );
-}
