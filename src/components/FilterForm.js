@@ -1,43 +1,39 @@
-import React, {useRef} from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 
+const FilterForm = () => {
+  const [price, setPrice] = useState('')
+  const [filter, setFilter] = useState('lt')
+  const navigate = useNavigate()
 
-const FilterForm = ({ setOpen }) => {
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if(!price.trim()) return;
 
-    const inputRef = useRef();
-    const selectRef = useRef();
+    return navigate(`/product/price/${filter}/${price}`)
+  }
 
-    const navigate = useNavigate();
+  return (
+    <div className='filter_form' title='Enter to filter'>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <input type="text" value={price}
+          placeholder="0" required
+          onChange={e => setPrice(e.target.value)}
+          />
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const value = inputRef.current.value;
-        const option = selectRef.current.value;
-        if(!value.trim() ) return;
-        // console.log(value, option);
-        setOpen(false);
-        return navigate(`/filter/${option}/${value}`);
-    }
-
-    return (
-        <div className='filter_form' title='Enter to filter'>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <input type="text"
-                           placeholder="0" required
-                           ref={inputRef}
-                    />
-                    <select ref={selectRef}>
-                        <option value="lt" title='lesser than'>LT</option>
-                        <option value="lte" title='lesser than or equal'>LTE</option>
-                        <option value="gt" title='greater than'>GT</option>
-                        <option value="gte" title='greater than or equal'>GTE</option>
-                    </select>
-                </div>
-                <button>Submit</button>
-            </form>
+          <select onChange={e => setFilter(e.target.value)}>
+            <option value="lt" title='lesser than'>LT</option>
+            <option value="lte" title='lesser than or equal'>LTE</option>
+            <option value="gt" title='greater than'>GT</option>
+            <option value="gte" title='greater than or equal'>GTE</option>
+          </select>
         </div>
-    );
-};
+        <button>Submit</button>
+      </form>
+      
+    </div>
+  )
+}
 
-export default FilterForm;
+export default FilterForm
