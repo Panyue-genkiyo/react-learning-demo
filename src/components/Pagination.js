@@ -1,31 +1,41 @@
 import React from 'react';
-import usePagination from "../hooks/usePagination";
+import usePagination from '../hooks/usePagination'
 
-//react memo避免home主页渲染多次导致pagination组件多次无效渲染
-const Pagination = ({ totalPages }) => {
+const Pagination = React.memo(({ totalPages }) => {
+  const { 
+    page, firstArr, lastArr, next, prev, jump 
+  } = usePagination(totalPages)
 
-    const { prev, next, jump, firstArr, lastArr, isActive } = usePagination(totalPages);
-    return (
-        <div className='pagination'>
-            <button onClick={prev}>&laquo;</button>
-            {
-                firstArr.map(num => (
-                    <button onClick={() => jump(num)} key={num} className={`${isActive(num)}`}>
-                        {num}
-                    </button>
-                ))
-            }
-            {lastArr.length > 0 && <button>...</button>}
-            {
-                lastArr.map(num => (
-                    <button onClick={() => jump(num)} key={num} className={`${isActive(num)}`}>
-                        {num}
-                    </button>
-                ))
-            }
-            <button onClick={next}>&raquo;</button>
-        </div>
-    )
-}
+  const isActive = (index) => {
+    if(index === page) return "active";
+    return ""
+  }
 
-export default React.memo(Pagination)
+  return <div className='pagination'>
+    <button onClick={prev}>&laquo;</button>
+
+    {
+      firstArr.map(num => (
+        <button key={num} className={`${isActive(num)}`}
+        onClick={() => jump(num)}>
+          {num}
+        </button>
+      ))
+    }
+
+    { lastArr.length > 0 && <button>...</button> }
+
+    {
+      lastArr.map(num => (
+        <button key={num} className={`${isActive(num)}`}
+        onClick={() => jump(num)}>
+          {num}
+        </button>
+      ))
+    }
+
+    <button onClick={next}>&raquo;</button>
+  </div>;
+});
+
+export default Pagination;
