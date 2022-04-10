@@ -86,6 +86,9 @@ code {
 /* Loading */
 @import url('css/loading.css');
 
+/* lazy load image */
+@import url('css/lazyLoadimg.css');
+
 .btn-load_more{
   background: white;
   border: 2px solid green;
