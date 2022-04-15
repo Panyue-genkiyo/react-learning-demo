@@ -1,5 +1,11 @@
 import axios from 'axios';
 
+export const getData = async ({ queryKey }) => {
+  const { data } = await axios.get(`${queryKey[0]}`);
+  return data ;
+}
+
+
 export const getProducts = (limit, page, sort) => {
   return `/products?limit=${limit}&page=${page}&sort=${sort}`;
 };
