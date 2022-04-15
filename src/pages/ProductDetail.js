@@ -8,7 +8,13 @@ import { useQuery } from "react-query";
 const ProductDetail = () => {
   const { id } = useParams()
   const url = getOneProduct(id)
-  const { data: productDetail, isLoading, isError, error} = useQuery(url, getData)
+  const { data: productDetail, isLoading, isError, error} = useQuery(
+      url,
+      getData,
+      {
+          enabled: !!id //当id不存在是不会触发该useQuery
+      }
+  )
 
   return (
       <main>
