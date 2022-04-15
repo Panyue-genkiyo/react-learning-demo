@@ -22,16 +22,18 @@ const Home = () => {
       getData,
       {
           //跳过loading和success,但是不跳过fetching过程
-          keepPreviousData: true //在这一次请求到达之前保留上一页的请求数据 防止不同的queryKey造成loading展示
+          keepPreviousData: true, //在这一次请求到达之前保留上一页的请求数据 防止不同的queryKey造成loading展示
+          //staleTime: 5000, //设置过期时间5s，在过期时间5s，不会再触发background fetching 5s后fresh状态变为stale状态，适合不经常变化的数据
+          cacheTime: 3000, //设置缓存1s，缓存失效后将重新fetch data导致isFetching状态变化(只有第一次isLoading才变化)，切分页状态isPreviousData也会变化
       }
   )
-    console.log({isPreviousData}); //先true后false
+    // console.log({isPreviousData}); //先true后false
+    console.log({ isLoading, isFetching, isPreviousData })
 
   const totalPages = useMemo(() => {
     if(!productsData) return 0;
     return Math.ceil(productsData.data.count/limit)
   }, [productsData, limit]);
-
 
   return (
       <main>
@@ -44,7 +46,7 @@ const Home = () => {
             // loading={isFetching}
             //注意isLoading和isFetching是有区别的！！
             // loading={isLoading}
-            loading={isFetching && isPreviousData}
+            loading={(isFetching && isPreviousData) || isLoading}
             error={isError ? error.message : null}
         />
         <Pagination totalPages={totalPages}/>
