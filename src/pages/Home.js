@@ -17,7 +17,7 @@ const Home = () => {
   const key = `/products?limit=${limit}&page=${page}&sort=${sort}`;
 
   //isFetching和isLoading是不一样的，默认第一次loading为true，后面都为false，但是isFetching一直为true，更多的指的背后加载
-  const { data: productsData, isLoading, error, isError, isFetching } = useQuery(
+  const { data: productsData, isLoading, error, isError, isFetching, isPreviousData } = useQuery(
       key,
       getData,
       {
@@ -25,6 +25,7 @@ const Home = () => {
           keepPreviousData: true //在这一次请求到达之前保留上一页的请求数据 防止不同的queryKey造成loading展示
       }
   )
+    console.log({isPreviousData}); //先true后false
 
   const totalPages = useMemo(() => {
     if(!productsData) return 0;
@@ -42,7 +43,8 @@ const Home = () => {
             data={productsData?.data.products}
             // loading={isFetching}
             //注意isLoading和isFetching是有区别的！！
-            loading={isLoading}
+            // loading={isLoading}
+            loading={isFetching && isPreviousData}
             error={isError ? error.message : null}
         />
         <Pagination totalPages={totalPages}/>
