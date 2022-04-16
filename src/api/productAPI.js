@@ -24,8 +24,8 @@ export const searchProducts = (value, sort, limit) => {
   return `/products?search=${value}&sort=${sort}&limit=${limit}`;
 };
 
-export const filterProducts = (filter, value, sort) => {
-  return `/products?price[${filter}]=${value}&sort=${sort}`;
+export const filterProducts = (filter, value, sort, limit) => {
+  return `/products?price[${filter}]=${value}&sort=${sort}&limit=${limit}`;
 };
 
 export const createProduct = async (data) => {
