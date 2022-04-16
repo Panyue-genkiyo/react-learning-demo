@@ -5,6 +5,12 @@ export const getData = async ({ queryKey }) => {
   return data ;
 }
 
+//无限加载所需的回调函数
+export const getInfiniteData = async ({ queryKey, pageParam = 1 }) => {
+    const { data } = await axios.get(`${queryKey[0]}&page=${pageParam}`);
+    return data;
+}
+
 
 export const getProducts = (limit, page, sort) => {
   return `/products?limit=${limit}&page=${page}&sort=${sort}`;
@@ -14,8 +20,8 @@ export const getOneProduct = (id) => {
   return `/products/${id}`;
 };
 
-export const searchProducts = (value, sort) => {
-  return `/products?search=${value}&sort=${sort}`;
+export const searchProducts = (value, sort, limit) => {
+  return `/products?search=${value}&sort=${sort}&limit=${limit}`;
 };
 
 export const filterProducts = (filter, value, sort) => {
