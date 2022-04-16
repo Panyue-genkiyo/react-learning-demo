@@ -1,57 +1,72 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom'
-import { searchProducts } from '../api/productAPI';
+import {getInfiniteData, searchProducts} from '../api/productAPI';
 import Products from '../components/Products';
 import Sorting from '../components/Sorting';
 import { useMyContext } from '../context/store';
 import useCustomRouter from '../hooks/useCustomRouter';
-import useInfinityQuery from '../hooks/useInfinityQuery';
+// import useInfinityQuery from '../hooks/useInfinityQuery';
+import { useInfiniteQuery } from "react-query";
 
 
 const Search = () => {
-  const limit = 5;
+  const limit = 2;
   const { value } = useParams();
   const { sort } = useMyContext()
 
-  const [products, setProducts] = useState([])
-  const [stop, setStop] = useState(false)
-
   const { pushQuery } = useCustomRouter()
 
-  const url = searchProducts(value, sort)
-  const { 
-    btnRender, data, loading, error 
-  } = useInfinityQuery(url, [value, sort], { 
-    limit: limit, 
-    stop: stop 
-  })
+  const url = searchProducts(value, sort, limit);
 
-  useEffect(() => {
-    if(!data) return;
-    setProducts(prev => [...prev, ...data.products])
+  const {
+    data: searchData,
+    hasNextPage,
+    error,
+    isError,
+    isFetching,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
+      url,
+      getInfiniteData,
+      {
+         getNextPageParam: (lastPage, allPages) => {
+             // console.log({lastPage, allPages})
+             let { products } = lastPage.data
+             if(products.length >= limit) {
+                return allPages.length + 1
+             }else{
+                return undefined; //告诉该useInfiniteQuery没有下一页 注意
+             }
+         },
+      });
 
-    if(data.products.length < limit)
-      return setStop(true)
-  },[data, limit])
 
-  useEffect(() => {
-    setProducts([])
-    setStop(false)
-  }, [value, sort])
-  
-
-  return <div>
-    <Sorting sort={sort}
-    calback={(sort) => pushQuery({sort})}
-     />
-    <Products 
-    data={products} 
-    loading={loading} 
-    error={error} 
-    />
-
-    { btnRender() }
-  </div>;
+  return (
+      <div>
+        <Sorting sort={sort}
+                 calback={(sort) => pushQuery({sort})}
+        />
+          <div className='products'>
+              {
+                  searchData?.pages.map((page, i) => (
+                      <Products
+                          key={i}
+                          data={page.data.products}
+                          error={isError ? error.message : null}
+                      />
+                  ))
+              }
+          </div>
+          { isFetching && '...isFetching' }
+          <button onClick={() => fetchNextPage()}
+                  className="btn-load_more"
+                  disabled={!hasNextPage || isFetchingNextPage}
+                  >
+              Load more
+          </button>
+      </div>
+  )
 };
 
 export default Search;
