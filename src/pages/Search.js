@@ -7,14 +7,16 @@ import { useMyContext } from '../context/store';
 import useCustomRouter from '../hooks/useCustomRouter';
 // import useInfinityQuery from '../hooks/useInfinityQuery';
 import { useInfiniteQuery } from "react-query";
+import useInView from "../hooks/useInView";
 
 
 const Search = () => {
   const limit = 2;
   const { value } = useParams();
-  const { sort } = useMyContext()
+  const { sort } = useMyContext();
+  const { ref, isView } = useInView()
 
-  const { pushQuery } = useCustomRouter()
+  const { pushQuery } = useCustomRouter();
 
   const url = searchProducts(value, sort, limit);
 
@@ -42,6 +44,10 @@ const Search = () => {
       });
 
 
+  useEffect(() => {
+      if(isView && !isFetchingNextPage) fetchNextPage();
+  }, [isView, fetchNextPage, isFetchingNextPage])
+
   return (
       <div>
         <Sorting sort={sort}
@@ -62,6 +68,7 @@ const Search = () => {
           <button onClick={() => fetchNextPage()}
                   className="btn-load_more"
                   disabled={!hasNextPage || isFetchingNextPage}
+                  ref={ref}
                   >
               Load more
           </button>
