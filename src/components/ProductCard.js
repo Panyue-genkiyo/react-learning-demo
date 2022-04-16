@@ -5,14 +5,14 @@ import Modal from './Modal';
 import ProductForm from './ProductForm';
 import { deleteProduct } from '../api/productAPI';
 import useMutation from '../hooks/useMutation';
-import LazyLoadImg from "./LazyLoadImg";
+import useLazyLoading from "../hooks/useLazyLoading";
 
 
 const ProductCard = ({product}) => {
   const [openModal, setOpenModal] = useState(false)
   // const { refresh, setRefresh } = useContext(Store)
-  const { mutate } = useMutation()
-
+  const { mutate } = useMutation();
+  const { imgRef } = useLazyLoading();
 
 
   const handleDeleteProduct = (id) => {
@@ -24,7 +24,9 @@ const ProductCard = ({product}) => {
 
 
   return <div className='card'>
-    <LazyLoadImg url={product.image}/>
+    <Link to={`/products/${product._id}`}>
+      <img ref={imgRef} alt={product.image} className='lazy-load'/>
+    </Link>
 
     <div className="box">
       <h3>
