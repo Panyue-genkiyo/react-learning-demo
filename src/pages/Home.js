@@ -19,7 +19,7 @@ const Home = () => {
   // const key2 = useMemo(() => `/products?limit=${limit}&page=${page + 1}&sort=${sort}`,[sort,limit,page]);
 
   useEffect(() => {
-      queryClient.setQueryData(['keys'], { k1: key, k2: '' })
+      queryClient.setQueryData('keys', { k1: key, k2: '' })
   }, [queryClient, key])
 
     //提前fetch下一页products prefetch
