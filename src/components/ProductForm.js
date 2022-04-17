@@ -16,9 +16,9 @@ const ProductForm = ({btnTxt, data}) => {
     e.preventDefault()
     let newData = { title, description, image, price, category };
     if(id){
-      updateMute({id, ...newData})
+      updateMute({id, newData})
     }else{
-      createMute(newData);
+      createMute({newData})
     }
   }
 
@@ -56,7 +56,7 @@ const ProductForm = ({btnTxt, data}) => {
       onChange={e => setImage(e.target.value)}
       />
 
-      <button>
+      <button disabled={(createIsLoading || updateIsLoading)}>
         { (createIsLoading || updateIsLoading) ? 'Loading...' : btnTxt }
       </button>
     </form>
