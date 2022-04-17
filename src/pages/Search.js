@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useMemo} from 'react';
 import { useParams } from 'react-router-dom'
 import {getInfiniteData, searchProducts} from '../api/productAPI';
 import Products from '../components/Products';
@@ -6,7 +6,7 @@ import Sorting from '../components/Sorting';
 import { useMyContext } from '../context/store';
 import useCustomRouter from '../hooks/useCustomRouter';
 // import useInfinityQuery from '../hooks/useInfinityQuery';
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useQueryClient } from "react-query";
 import useInView from "../hooks/useInView";
 
 
@@ -14,11 +14,13 @@ const Search = () => {
   const limit = 2;
   const { value } = useParams();
   const { sort } = useMyContext();
-  const { ref, isView } = useInView()
+  const { ref, isView } = useInView();
+  const queryClient = useQueryClient();
 
   const { pushQuery } = useCustomRouter();
 
-  const url = searchProducts(value, sort, limit);
+  const url = useMemo(() => searchProducts(value, sort, limit), [value, sort, limit]);
+
 
   const {
     data: searchData,
@@ -43,6 +45,9 @@ const Search = () => {
          },
       });
 
+  useEffect(() => {
+      queryClient.setQueryData(['keys'], { k1: '', k2: url })
+  }, [queryClient, url])
 
   useEffect(() => {
       if(isView && !isFetchingNextPage) fetchNextPage();

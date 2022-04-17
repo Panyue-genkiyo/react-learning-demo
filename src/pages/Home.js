@@ -1,20 +1,25 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import Pagination from '../components/Pagination';
 import Products from '../components/Products';
 import Sorting from '../components/Sorting';
 import { useMyContext } from '../context/store';
 import useCustomRouter from '../hooks/useCustomRouter';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { getData } from "../api/productAPI";
 
 const Home = () => {
-  const { page, limit, sort } = useMyContext()
+  const { page, limit, sort } = useMyContext();
+  const queryClient = useQueryClient();
 
   const { pushQuery } = useCustomRouter();
 
   // const url = getProducts(limit, page, sort);
 
-  const key = `/products?limit=${limit}&page=${page}&sort=${sort}`;
+  const key = useMemo(() => `/products?limit=${limit}&page=${page}&sort=${sort}`,[sort,limit,page]);
+
+  useEffect(() => {
+      queryClient.setQueryData(['keys'], { k1: key, k2: '' })
+  }, [queryClient, key])
 
   //isFetching和isLoading是不一样的，默认第一次loading为true，后面都为false，但是isFetching一直为true，更多的指的背后加载
   const { data: productsData, isLoading, error, isError, isFetching, isPreviousData } = useQuery(
