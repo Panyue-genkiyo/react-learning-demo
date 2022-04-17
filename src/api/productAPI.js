@@ -1,4 +1,16 @@
 import axios from 'axios';
+import { toast } from "react-toastify";
+
+export const handleError = (err) => {
+  if(err.response.data.msg){
+    //自定义的错误
+    toast.error(err.response.data.msg);
+    throw new Error(err.response.data.msg);
+  }else{
+    toast.error(err.message);
+    throw new Error(err.message);
+  }
+}
 
 export const getData = async ({ queryKey }) => {
   const { data } = await axios.get(`${queryKey[0]}`);
@@ -28,12 +40,15 @@ export const filterProducts = (filter, value, sort, limit) => {
   return `/products?price[${filter}]=${value}&sort=${sort}&limit=${limit}`;
 };
 
-export const createProduct = async (data) => {
-  return axios.post('/products', data)
+export const createProduct = async (newData) => {
+  // console.log({data});
+  const { data } = await axios.post('/products', newData);
+  return data;
 };
 
-export const updateProduct = async (data) => {
-  return axios.put(`/products/${data.id}`, data)
+export const updateProduct = async (updateData) => {
+  const { data } = await axios.put(`/products/${updateData.id}`, updateData);
+  return data;
 };
 
 export const deleteProduct = async (id) => {
