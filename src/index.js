@@ -18,6 +18,7 @@ const queryClient = new QueryClient({
             retry: false,
             refetchOnWindowFocus: false,
             staleTime: 60 * 1000, //1min中"保险"时间，不进行background fetch
+            // staleTime: Infinity,
         }
     }
 });
