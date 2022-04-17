@@ -3,25 +3,21 @@ import { Link } from 'react-router-dom';
 
 import Modal from './Modal';
 import ProductForm from './ProductForm';
-import { deleteProduct } from '../api/productAPI';
-import useMutation from '../hooks/useMutation';
 import useLazyLoading from "../hooks/useLazyLoading";
+import {useDeleteProduct} from "../hooks/useMutationProduct";
 
 
 const ProductCard = ({product}) => {
-  const [openModal, setOpenModal] = useState(false)
-  // const { refresh, setRefresh } = useContext(Store)
-  const { mutate } = useMutation();
-  const { imgRef } = useLazyLoading();
 
+  const [openModal, setOpenModal] = useState(false)
+  const { mutate } = useDeleteProduct();
+  const { imgRef } = useLazyLoading();
 
   const handleDeleteProduct = (id) => {
     if(window.confirm('Do you want to delete this?')){
-      // deleteProduct(id).then(setRefresh(!refresh))
-      mutate(() => deleteProduct(id))
+      mutate(id)
     }
   }
-
 
   return <div className='card'>
     <Link to={`/products/${product._id}`}>
