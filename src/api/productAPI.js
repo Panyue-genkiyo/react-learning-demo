@@ -40,14 +40,14 @@ export const filterProducts = (filter, value, sort, limit) => {
   return `/products?price[${filter}]=${value}&sort=${sort}&limit=${limit}`;
 };
 
-export const createProduct = async (newData) => {
+export const createProduct = async (nD) => {
   // console.log({data});
-  const { data } = await axios.post('/products', newData);
+  const { data } = await axios.post('/products', nD.newData);
   return data;
 };
 
 export const updateProduct = async (updateData) => {
-  const { data } = await axios.put(`/products/${updateData.id}`, updateData);
+  const { data } = await axios.put(`/products/${updateData.id}`, updateData.newData);
   return data;
 };
 
