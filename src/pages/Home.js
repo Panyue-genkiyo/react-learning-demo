@@ -16,10 +16,20 @@ const Home = () => {
   // const url = getProducts(limit, page, sort);
 
   const key = useMemo(() => `/products?limit=${limit}&page=${page}&sort=${sort}`,[sort,limit,page]);
+  // const key2 = useMemo(() => `/products?limit=${limit}&page=${page + 1}&sort=${sort}`,[sort,limit,page]);
 
   useEffect(() => {
       queryClient.setQueryData(['keys'], { k1: key, k2: '' })
   }, [queryClient, key])
+
+    //提前fetch下一页products prefetch
+  // useEffect(() => {
+  //     const prefetchProducts = async () => {
+  //         // The results of this query will be cached like a normal query
+  //         await queryClient.prefetchQuery(key2,getData)
+  //     }
+  //     prefetchProducts();
+  // }, [queryClient, key2])
 
   //isFetching和isLoading是不一样的，默认第一次loading为true，后面都为false，但是isFetching一直为true，更多的指的背后加载
   const { data: productsData, isLoading, error, isError, isFetching, isPreviousData } = useQuery(
