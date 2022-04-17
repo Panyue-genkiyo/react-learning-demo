@@ -9,7 +9,7 @@ export const useMyContext = () => useContext(Store)
 
 export const ContextProvider = ({children}) => {
   const init = {
-    refresh: false, limit: 5, page: 1, sort: '-createdAt'
+     limit: 5, page: 1, sort: '-createdAt'
   }
   const [state, dispatch] = useReducer(reducers, init)
   const { search } = useLocation()
@@ -21,9 +21,9 @@ export const ContextProvider = ({children}) => {
     dispatch({type: "SET_PAGE", payload: Number(page)})
     dispatch({type: "SET_SORT", payload: sort})
   },[search, dispatch])
-  
+
   const value = { ...state, dispatch };
-  
+
   return (
     <Store.Provider value={value}>
       {children}
